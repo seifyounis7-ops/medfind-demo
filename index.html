@@ -13,9 +13,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;800&display=swap" rel="stylesheet">
-<style>
+<style>@font-face{font-family:"Alexandria";font-weight:400;font-display:swap;src:url(alexandria-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}@font-face{font-family:"Alexandria";font-weight:500;font-display:swap;src:url(alexandria-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}@font-face{font-family:"Alexandria";font-weight:600;font-display:swap;src:url(alexandria-arabic-600-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}@font-face{font-family:"Alexandria";font-weight:800;font-display:swap;src:url(alexandria-arabic-800-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}@font-face{font-family:"Inter";font-weight:400;font-display:swap;src:url(inter-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Inter";font-weight:500;font-display:swap;src:url(inter-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Inter";font-weight:600;font-display:swap;src:url(inter-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Inter";font-weight:700;font-display:swap;src:url(inter-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Inter";font-weight:800;font-display:swap;src:url(inter-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --sign:#00A35B; --sign-deep:#00703E; --sign-tint:#E3F6EC;
   --ink:#0D2A1F; --ink-2:#4A5F56; --ink-3:#7C8C85;
@@ -51,7 +49,7 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Alexandria",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter","Alexandria",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -60,7 +58,7 @@ button{cursor:pointer}
 .screen{flex:1;display:flex;flex-direction:column}
 .pad{padding:0 20px}
 .muted{color:var(--ink-2)} .faint{color:var(--ink-3)}
-.en{direction:ltr;unicode-bidi:isolate}
+.en{direction:ltr;unicode-bidi:isolate;font-family:"Inter","Alexandria",system-ui,sans-serif;letter-spacing:-.01em}
 
 /* top bars */
 .top{display:flex;align-items:center;gap:8px;min-height:60px;padding:0 12px}
@@ -294,7 +292,7 @@ function packArt(d, w = 52) {
   const name = short(d.en).split(' ')[0].slice(0, 10);
   const str = (d.en.match(/\d+(?:\.\d+)?\s*(?:MG|MCG|GM|G|ML|IU|%)(?:\/\d*\s*(?:ML|G|GM))?/i) || [''])[0].toLowerCase();
   const fs = name.length > 7 ? 11 : 13;
-  return `<span class="packart" style="width:${w}px" aria-hidden="true"><svg viewBox="0 0 120 86"><polygon points="0,16 20,2 118,2 98,16" fill="#EEF2EF"/><polygon points="98,16 118,2 118,70 98,84" fill="${d.c}" opacity=".78"/><rect x="0" y="16" width="98" height="68" fill="#FFFFFF" stroke="#DDE3DF"/><rect x="0" y="58" width="98" height="18" fill="${d.c}"/><rect x="8" y="24" width="22" height="4" rx="2" fill="${d.c}"/><text x="8" y="44" direction="ltr" font-family="Alexandria" font-weight="800" font-size="${fs}" fill="#0D2A1F">${esc(name)}</text><text x="8" y="54" direction="ltr" font-family="Alexandria" font-weight="600" font-size="7.5" fill="${d.c}">${esc(str)}</text><text x="90" y="71" direction="ltr" text-anchor="end" font-family="Alexandria" font-weight="600" font-size="7" fill="#FFFFFF">${pack(d.en) ? pack(d.en) + ' TABS' : ''}</text></svg></span>`;
+  return `<span class="packart" style="width:${w}px" aria-hidden="true"><svg viewBox="0 0 120 86"><polygon points="0,16 20,2 118,2 98,16" fill="#EEF2EF"/><polygon points="98,16 118,2 118,70 98,84" fill="${d.c}" opacity=".78"/><rect x="0" y="16" width="98" height="68" fill="#FFFFFF" stroke="#DDE3DF"/><rect x="0" y="58" width="98" height="18" fill="${d.c}"/><rect x="8" y="24" width="22" height="4" rx="2" fill="${d.c}"/><text x="8" y="44" direction="ltr" font-family="Inter, Alexandria, sans-serif" font-weight="800" font-size="${fs}" fill="#0D2A1F">${esc(name)}</text><text x="8" y="54" direction="ltr" font-family="Inter, Alexandria, sans-serif" font-weight="600" font-size="7.5" fill="${d.c}">${esc(str)}</text><text x="90" y="71" direction="ltr" text-anchor="end" font-family="Inter, Alexandria, sans-serif" font-weight="600" font-size="7" fill="#FFFFFF">${pack(d.en) ? pack(d.en) + ' TABS' : ''}</text></svg></span>`;
 }
 
 const PHARM = [
@@ -369,7 +367,7 @@ function mapSVG(drugId, h = 220, focus) {
     const on = st === 'in', f = focus === p.id;
     return `<g transform="translate(${p.x},${p.y})">
       <circle r="${f ? 22 : 17}" fill="${on ? 'var(--sign)' : 'var(--bg)'}" stroke="${on ? '#fff' : 'var(--ink-3)'}" stroke-width="3"/>
-      <text text-anchor="middle" dy="5" font-size="14" font-weight="800" fill="${on ? '#fff' : 'var(--ink-3)'}" font-family="Alexandria">${i + 1}</text></g>`;
+      <text text-anchor="middle" dy="5" font-size="14" font-weight="800" fill="${on ? '#fff' : 'var(--ink-3)'}" font-family="Inter, Alexandria, sans-serif">${i + 1}</text></g>`;
   }).join('');
   return `<svg viewBox="0 0 420 ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <rect width="420" height="${h}" fill="var(--block)"/>
@@ -380,8 +378,8 @@ function mapSVG(drugId, h = 220, focus) {
     <path d="M150 ${h * .3} L170 ${h * .72}" stroke="var(--street)" stroke-width="9"/>
     <path d="M310 ${h * .25} L360 ${h * .85}" stroke="var(--street)" stroke-width="9"/>
     <rect x="270" y="${h * .38}" width="40" height="${h * .22}" rx="6" fill="var(--sign-tint)"/>
-    <text x="232" y="${h * .2}" font-size="10" fill="var(--ink-3)" font-family="Alexandria" transform="rotate(-80 232 ${h * .2})">شارع مكرم عبيد</text>
-    <text x="20" y="${h * .33}" font-size="10" fill="var(--ink-3)" font-family="Alexandria">شارع عباس العقاد</text>
+    <text x="232" y="${h * .2}" font-size="10" fill="var(--ink-3)" font-family="Inter, Alexandria, sans-serif" transform="rotate(-80 232 ${h * .2})">شارع مكرم عبيد</text>
+    <text x="20" y="${h * .33}" font-size="10" fill="var(--ink-3)" font-family="Inter, Alexandria, sans-serif">شارع عباس العقاد</text>
     <g transform="translate(200,${h * .55})"><circle r="26" fill="var(--sign)" opacity=".12"/><circle r="8" fill="#2E7DF6" stroke="#fff" stroke-width="3"/></g>
     ${pins}</svg>`;
 }
