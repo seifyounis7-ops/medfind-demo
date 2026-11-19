@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medfind</title>
+<meta name="theme-color" content="#00A35B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Medfind">
+<meta name="description" content="Medfind — لاقي دواك في أقرب صيدلية (نسخة تجريبية)">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sign:#00A35B; --sign-deep:#00703E; --sign-tint:#E3F6EC;
+  --ink:#0D2A1F; --ink-2:#4A5F56; --ink-3:#7C8C85;
+  --bg:#FFFFFF; --surface:#F2F5F3; --rule:#E2E8E4;
+  --amber:#FFB400; --amber-ink:#6B4A00; --amber-tint:#FFF4D6;
+  --red:#D63A28; --red-tint:#FCE9E6;
+  --bubble-me:#00A35B; --bubble-me-ink:#FFFFFF; --bubble-them:#F2F5F3;
+  --street:#E9EEEB; --block:#F7F9F8; --nile:#CFE6F2;
+  --shade:rgba(13,42,31,.5);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sign:#2BC97D; --sign-deep:#7FE0B0; --sign-tint:#123826;
+  --ink:#E8F1EC; --ink-2:#AFC0B8; --ink-3:#83958D;
+  --bg:#0E1714; --surface:#17221E; --rule:#25332D;
+  --amber:#FFC23D; --amber-ink:#FFD98A; --amber-tint:#3A2E0F;
+  --red:#FF7A66; --red-tint:#3B1A15;
+  --bubble-me:#1F8F59; --bubble-me-ink:#FFFFFF; --bubble-them:#1B2824;
+  --street:#1E2B26; --block:#141E1A; --nile:#173445;
+  --shade:rgba(0,0,0,.6); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --sign:#2BC97D; --sign-deep:#7FE0B0; --sign-tint:#123826;
+  --ink:#E8F1EC; --ink-2:#AFC0B8; --ink-3:#83958D;
+  --bg:#0E1714; --surface:#17221E; --rule:#25332D;
+  --amber:#FFC23D; --amber-ink:#FFD98A; --amber-tint:#3A2E0F;
+  --red:#FF7A66; --red-tint:#3B1A15;
+  --bubble-me:#1F8F59; --bubble-me-ink:#FFFFFF; --bubble-them:#1B2824;
+  --street:#1E2B26; --block:#141E1A; --nile:#173445;
+  --shade:rgba(0,0,0,.6); color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Alexandria",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.app{max-width:460px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;position:relative}
+.screen{flex:1;display:flex;flex-direction:column}
+.pad{padding:0 20px}
+.muted{color:var(--ink-2)} .faint{color:var(--ink-3)}
+.en{direction:ltr;unicode-bidi:isolate}
+
+/* top bars */
+.top{display:flex;align-items:center;gap:8px;min-height:60px;padding:0 12px}
+.top .t{flex:1;font-weight:600;font-size:17px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib{width:44px;height:44px;border:0;background:transparent;border-radius:999px;display:grid;place-items:center;color:var(--ink)}
+.ib svg{width:22px;height:22px}
+.loc{display:flex;align-items:center;gap:6px;border:0;background:transparent;font-weight:600;font-size:15px;padding:8px 8px}
+.loc svg{width:18px;height:18px;color:var(--sign)}
+.brandmark{width:38px;height:38px;border-radius:11px;background:var(--sign);display:grid;place-items:center;flex:none}
+.brandmark svg{width:30px;height:30px}
+.avatar{width:38px;height:38px;border-radius:999px;background:var(--sign-tint);color:var(--sign-deep);display:grid;place-items:center;font-weight:800}
+
+/* home */
+.hello{font-size:30px;font-weight:800;line-height:1.25;margin:6px 0 16px;letter-spacing:-.01em}
+.searchbox{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:16px;padding:0 6px 0 14px;min-height:56px}
+.searchbox svg{width:20px;height:20px;color:var(--ink-3);flex:none}
+.searchbox input{flex:1;border:0;background:transparent;outline:0;font-size:16px;min-width:0}
+.cam{width:44px;height:44px;border:0;border-radius:12px;background:var(--bg);display:grid;place-items:center;color:var(--ink)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
+.sec h2{margin:0;font-size:17px;font-weight:600}
+.sec span{font-size:13px;color:var(--ink-3)}
+.shelf{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 6px;margin:0 -20px;scroll-snap-type:x mandatory}
+.shelf::-webkit-scrollbar{display:none}
+.pack{flex:none;width:148px;border:0;background:transparent;text-align:start;padding:0;scroll-snap-align:start}
+.box{height:96px;border-radius:12px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:10px;color:#fff;font-weight:800;font-size:15px;letter-spacing:.01em}
+.box::before{content:"";position:absolute;inset:0 0 auto;height:34%;background:rgba(255,255,255,.18)}
+.box::after{content:"";position:absolute;inset-inline-end:10px;top:10px;width:26px;height:6px;border-radius:3px;background:rgba(255,255,255,.55)}
+.pack b{display:block;font-size:14px;font-weight:600;margin-top:8px}
+.pack small{font-size:12px;color:var(--ink-3)}
+.short{display:inline-block;margin-top:4px;font-size:12px;font-weight:600;color:var(--amber-ink);background:var(--amber-tint);border-radius:6px;padding:1px 7px}
+.rows{display:flex;flex-direction:column}
+.prow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.prow:last-child{border-bottom:0}
+.xmark{width:40px;height:40px;border-radius:10px;background:var(--sign);display:grid;place-items:center;flex:none;color:#fff}
+.xmark svg{width:20px;height:20px}
+.prow .g{flex:1;min-width:0}
+.prow b{display:block;font-weight:600;font-size:15px}
+.prow small{font-size:13px;color:var(--ink-2)}
+.open{font-size:12px;font-weight:600;color:var(--sign-deep)}
+
+/* bottom nav */
+.nav{position:sticky;bottom:0;margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border-top:1px solid var(--rule);padding-bottom:env(safe-area-inset-bottom,0px);z-index:4}
+.nav button{border:0;background:transparent;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;color:var(--ink-3);position:relative}
+.nav svg{width:24px;height:24px}
+.nav [aria-current="page"]{color:var(--sign-deep);font-weight:600}
+.nav .n{position:absolute;top:6px;inset-inline-start:calc(50% + 6px);background:var(--red);color:#fff;border-radius:999px;min-width:18px;height:18px;font-size:11px;display:grid;place-items:center;padding:0 5px;font-weight:600}
+
+/* results: the map is the hero */
+.map{height:220px;position:relative;background:var(--block);overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.drughead{padding:16px 20px 6px}
+.drughead .name{font-size:24px;font-weight:800;line-height:1.2}
+.drughead .meta{font-size:13px;color:var(--ink-2);margin-top:4px}
+.res{display:flex;gap:12px;padding:14px 20px;border-bottom:1px solid var(--rule);align-items:flex-start}
+.res .num{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;margin-top:2px}
+.res .num.in{background:var(--sign);color:#fff}
+.res .num.out{background:var(--surface);color:var(--ink-3)}
+.res .g{flex:1;min-width:0}
+.res b{display:block;font-size:16px;font-weight:600}
+.res small{display:block;font-size:13px;color:var(--ink-2)}
+.stock{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-top:6px}
+.stock i{width:8px;height:8px;border-radius:99px;display:inline-block}
+.stock.in{color:var(--sign-deep)} .stock.in i{background:var(--sign)}
+.stock.out{color:var(--red)} .stock.out i{background:var(--red)}
+.ask{margin-top:12px;display:flex;gap:8px}
+.cta{min-height:52px;border:0;border-radius:14px;background:var(--sign);color:#fff;font-weight:600;font-size:16px;padding:0 18px;width:100%}
+.cta.small{min-height:44px;font-size:15px;width:auto;flex:1}
+.cta.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--rule)}
+.cta.ok{background:var(--sign)} .cta.no{background:transparent;color:var(--red);box-shadow:inset 0 0 0 1.5px var(--red)}
+.cta:disabled{opacity:.45}
+.sq{width:44px;height:44px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1.5px var(--rule);background:transparent;display:grid;place-items:center;flex:none}
+.sq svg{width:20px;height:20px}
+
+/* chat confirmation: the memorable moment */
+.chat{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.stamp{align-self:center;font-size:12px;color:var(--ink-3);margin:6px 0}
+.msg{max-width:78%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.5}
+.msg.me{align-self:flex-start;background:var(--bubble-me);color:var(--bubble-me-ink);border-end-start-radius:6px}
+.msg.them{align-self:flex-end;background:var(--bg);border-end-end-radius:6px;box-shadow:0 1px 0 var(--rule)}
+.msg .who{display:block;font-size:12px;font-weight:600;color:var(--sign-deep);margin-bottom:2px}
+.msg small{display:block;font-size:11px;opacity:.7;margin-top:2px}
+.typing{align-self:flex-end;background:var(--bg);border-radius:18px;padding:12px 16px;display:flex;gap:5px}
+.typing i{width:7px;height:7px;border-radius:99px;background:var(--ink-3);animation:bob 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bob{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.dock{padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;background:var(--bg);border-top:1px solid var(--rule)}
+
+/* receipt */
+.receipt{margin:8px 20px 0;background:var(--surface);border-radius:4px;padding:18px 16px;position:relative}
+.receipt::after{content:"";position:absolute;inset:auto 0 -8px 0;height:8px;background:radial-gradient(circle at 8px -2px,transparent 8px,var(--surface) 8.5px) 0 0/16px 8px repeat-x}
+.rl{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:15px}
+.rl.tot{border-top:1.5px dashed var(--rule);margin-top:8px;padding-top:12px;font-size:18px;font-weight:800}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:40px;height:40px;border-radius:999px;border:0;box-shadow:inset 0 0 0 1.5px var(--rule);background:transparent;font-size:20px}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice button{border:0;box-shadow:inset 0 0 0 1.5px var(--rule);background:transparent;border-radius:14px;padding:12px;text-align:start}
+.choice button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--sign);background:var(--sign-tint)}
+.choice b{display:block;font-size:15px}
+.choice small{font-size:12px;color:var(--ink-2)}
+textarea.addr{width:100%;border:0;background:var(--surface);border-radius:14px;padding:12px 14px;font-size:15px;min-height:72px;resize:none}
+
+/* tracking */
+.route{height:170px;position:relative;background:var(--block)}
+.route svg{position:absolute;inset:0;width:100%;height:100%}
+.tl{padding:6px 20px}
+.tli{display:flex;gap:14px;align-items:flex-start;padding:8px 0}
+.tli .d{width:14px;height:14px;border-radius:99px;margin-top:5px;flex:none;box-shadow:inset 0 0 0 2px var(--rule);background:var(--bg)}
+.tli.done .d{background:var(--sign);box-shadow:none}
+.tli.now .d{background:var(--amber);box-shadow:0 0 0 5px var(--amber-tint)}
+.tli b{font-weight:600}
+.tli.next b{color:var(--ink-3);font-weight:400}
+.tli small{display:block;color:var(--ink-2);font-size:13px}
+
+/* pharmacist */
+.ph-head{background:var(--sign);color:#fff;padding:16px 20px 18px}
+.ph-head .t{font-size:20px;font-weight:800}
+.ph-head .s{font-size:13px;opacity:.9}
+.today{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;gap:8px}
+.today div{background:rgba(255,255,255,.14);border-radius:12px;padding:8px 10px}
+.today b{display:block;font-size:22px;font-weight:800;line-height:1.2}
+.today span{font-size:12px;opacity:.9}
+.q{padding:16px 20px;border-bottom:1px solid var(--rule)}
+.q .who{font-size:13px;color:var(--ink-2)}
+.q .drug{font-size:19px;font-weight:800;margin:2px 0 12px}
+.q.new{background:var(--amber-tint)}
+.bigbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bigbtns button{min-height:56px;border-radius:14px;border:0;font-weight:800;font-size:17px}
+.yes{background:var(--sign);color:#fff}
+.nope{background:var(--surface);color:var(--ink)}
+.order{padding:16px 20px;border-bottom:1px solid var(--rule)}
+.order .k{display:flex;justify-content:space-between;align-items:baseline}
+.order .k b{font-size:16px}
+.order .money{font-size:20px;font-weight:800;margin:6px 0 2px}
+.order .split{font-size:12px;color:var(--ink-3)}
+.status-chip{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--surface);color:var(--ink-2)}
+.inv{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--rule)}
+.inv .g{flex:1;min-width:0}
+.inv b{display:block;font-weight:600}
+.inv small{font-size:12px;color:var(--ink-3)}
+.sw{width:50px;height:30px;border-radius:99px;border:0;background:var(--rule);position:relative;flex:none}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-end:3px;width:24px;height:24px;border-radius:99px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:inset-inline-end .15s}
+.sw[aria-checked="true"]{background:var(--sign)}
+.sw[aria-checked="true"]::after{inset-inline-end:23px}
+.packart{display:block;flex:none}
+.login{padding:48px 24px 24px;display:flex;flex-direction:column;gap:14px;flex:1}
+.login h1{font-size:28px;font-weight:800;line-height:1.3;margin:12px 0 0}
+.login p{margin:0;color:var(--ink-2)}
+.inp{min-height:54px;border:0;border-radius:14px;background:var(--surface);padding:0 16px;font-size:17px;width:100%}
+.otp{letter-spacing:.5em;text-align:center;font-size:22px;font-weight:800}
+.altrow{display:flex;gap:10px;overflow-x:auto;padding:4px 20px 10px}
+.altrow::-webkit-scrollbar{display:none}
+.alt{flex:none;width:118px;border:0;background:transparent;text-align:start;padding:0}
+.alt b{display:block;font-size:13px;font-weight:600;margin-top:6px}
+.alt small{font-size:12px;color:var(--ink-3)}
+.rxbox{display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:12px}
+.rxbox img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.rxbox label{flex:1;cursor:pointer}
+.chip2{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--amber-tint);color:var(--amber-ink);border-radius:8px;padding:3px 8px}
+.mrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.mrow .g{flex:1;min-width:0}
+.mrow b{display:block}
+.mrow small{font-size:12px;color:var(--ink-2)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field span{font-size:13px;font-weight:600}
+.tg{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.bar2{height:8px;border-radius:99px;background:var(--surface);overflow:hidden;flex:1}
+.bar2 i{display:block;height:100%;background:var(--sign)}
+
+.packart svg{display:block;width:100%;height:auto}
+.stockcard{margin:14px 20px 4px;border-radius:16px;padding:14px 16px;background:var(--surface)}
+.stockcard b{display:block;font-size:15px}
+.stockcard small{display:block;font-size:13px;color:var(--ink-2);margin-top:2px}
+.stockcard .acts{display:flex;gap:8px;margin-top:12px}
+.stockcard.on{background:var(--sign-tint)}
+.optrow{display:flex;gap:12px;align-items:center;width:100%;text-align:start;border:0;background:var(--surface);border-radius:14px;padding:14px}
+.optrow .ic{width:40px;height:40px;border-radius:10px;background:var(--bg);display:grid;place-items:center;flex:none}
+.optrow b{display:block;font-size:15px}
+.optrow small{font-size:12px;color:var(--ink-2)}
+.bar{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sign);transition:width .3s}
+
+/* sheet, notification, demo switch */
+.shade{position:fixed;inset:0;background:var(--shade);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:460px;background:var(--bg);border-radius:22px 22px 0 0;padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;max-height:90%;overflow:auto}
+.handle{align-self:center;width:38px;height:5px;border-radius:99px;background:var(--rule)}
+.bigmic{align-self:center;width:88px;height:88px;border-radius:99px;border:0;background:var(--sign);color:#fff;display:grid;place-items:center;margin:6px 0}
+.bigmic svg{width:38px;height:38px}
+.bigmic.on{background:var(--red);box-shadow:0 0 0 10px var(--red-tint)}
+.heard{background:var(--surface);border-radius:14px;padding:12px 14px;min-height:52px;font-size:16px}
+.match{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.match .g{flex:1}
+.match b{display:block}
+.match small{font-size:12px;color:var(--ink-3)}
+.yn{display:flex;border-radius:10px;overflow:hidden;box-shadow:inset 0 0 0 1.5px var(--rule)}
+.yn button{border:0;background:transparent;padding:8px 12px;font-size:14px}
+.yn button[aria-pressed="true"].y{background:var(--sign);color:#fff;font-weight:600}
+.yn button[aria-pressed="true"].n{background:var(--red);color:#fff;font-weight:600}
+.notif{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);inset-inline:8px;max-width:444px;margin:0 auto;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:18px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);border:0;width:auto;text-align:start;animation:in .3s ease-out}
+.chainb{width:40px;height:40px;border-radius:10px;background:var(--surface);color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;box-shadow:inset 0 0 0 1.5px var(--rule)}
+.notif .xmark{width:38px;height:38px;border-radius:9px}
+.notif .g{flex:1;min-width:0}
+.notif .h{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
+.notif b{display:block;font-size:14px}
+.notif p{margin:0;font-size:13px;color:var(--ink-2)}
+@keyframes in{from{transform:translateY(-20px);opacity:0}}
+.demo{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom,0px));inset-inline-end:max(12px,calc(50% - 218px));z-index:15;border:0;border-radius:999px;background:var(--amber);color:#2B1F00;font-weight:600;font-size:13px;padding:9px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.demo svg{width:16px;height:16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div id="over"></div>
+
+<script>
+const DRUGS = [{"en":"CONCOR 5 MG 30 F.C. TABS.","ar":"كونكور","ing":"Bisoprolol Fumarate","p":72.0},{"en":"CONCOR 10 MG 30 F.C. TABS.","ar":"كونكور","ing":"Bisoprolol Fumarate","p":99.0},{"en":"PANADOL EXTRA 24 F.C. TABS.","ar":"بانادول إكسترا","ing":"Caffeine+Paracetamol(Acetaminophen)","p":54.0},{"en":"AUGMENTIN 1 GM 14 F.C.TABS.","ar":"أوجمنتين","ing":"Amoxicillin+Clavulanic Acid","p":210.0},{"en":"GLUCOPHAGE 500 MG 50 F.C.TABS.","ar":"جلوكوفاج","ing":"Metformin Hydrochloride","p":60.0},{"en":"GLUCOPHAGE 1000 MG 30 F.C.TABS.","ar":"جلوكوفاج","ing":"Metformin Hydrochloride","p":54.0},{"en":"BRUFEN 400 MG 30 TABS.","ar":"بروفين","ing":"Ibuprofen","p":78.0},{"en":"VENTOLIN 0.5% RESPIRATOR SOLUTION 20 ML","ar":"فينتولين","ing":"Salbutamol","p":33.0},{"en":"ANTINAL 200MG 24 CAPS.","ar":"أنتينال","ing":"Nifuroxazide","p":52.0},{"en":"CATAFLAM 50 MG 20 SUGAR C.TABS.","ar":"كاتافلام","ing":"Diclofenac Potassium","p":86.0},{"en":"CONGESTAL 20 TABS.","ar":"كونجيستال","ing":"Chlorpheniramine+Paracetamol(Acetaminophen)+Pseudoephedrine","p":50.0},{"en":"ZYRTEC 0.1% SYRUP 100ML","ar":"زيرتك شراب","ing":"Cetirizine","p":51.0},{"en":"CLARITINE 10MG 20 TAB.","ar":"كلاريتين","ing":"Loratadine","p":110.0},{"en":"ATOR 20 MG 10 F.C.TABS.","ar":"أتور","ing":"Atorvastatin","p":79.0},{"en":"AMARYL 2 MG 30 TABS.","ar":"أماريل","ing":"Glimepiride","p":78.0},{"en":"CONTROLOC 40MG 14 GASTRO-RESISTANT TABS.","ar":"كونترولوك","ing":"Pantoprazole","p":188.0},{"en":"MOTILIUM 10MG 40 F.C.TAB.","ar":"موتيليوم","ing":"Domperidone","p":100.0},{"en":"ADOL 500MG 24 CAPLETS","ar":"أدول","ing":"Paracetamol(Acetaminophen)","p":32.0},{"en":"DOLIPRANE 1 GM 15 TABS.","ar":"دوليبران","ing":"Paracetamol(Acetaminophen)","p":48.0},{"en":"CIPROFAR 500MG 10 F.C.TAB.","ar":"سيبروفار","ing":"Ciprofloxacin","p":69.0},{"en":"DEPAKINE 200MG 40 GASTRO-RESISTANT TABS.","ar":"ديباكين","ing":"Sodium Valproate","p":80.0},{"en":"OTRIVIN 0.05% PEDIATRIC NASAL DROPS 15 ML","ar":"أوتريفين أطفال","ing":"Xylometazoline","p":24.0},{"en":"TELFAST 120MG 20 F.C. TABS.","ar":"تيلفاست","ing":"Fexofenadine","p":116.0}];
+// Box colours borrowed from how Egyptian packs actually look: white boxes with one strong brand stripe.
+const BOX = ['#1F6FB2', '#1F6FB2', '#C8102E', '#5B2C83', '#0E7C86', '#0E7C86', '#D35400', '#2E86C1', '#8E44AD', '#B03A2E', '#117A65', '#7D3C98', '#2874A6', '#A04000', '#1E8449', '#6C3483', '#CA6F1E', '#B7950B', '#1A5276', '#943126', '#4A235A', '#148F77', '#7B241C'];
+// The full Egyptian drug list (CC0 dataset, ~25k packs): [name_en, name_ar, active ingredient, official price]
+let MORE = [];
+MORE.forEach(([en, ar, ing, p]) => DRUGS.push({en, ar, ing, p}));
+DRUGS.forEach((d, i) => { d.id = i; d.c = BOX[i % BOX.length]; });
+// The full list loads after the app opens, so the first screen appears instantly.
+fetch('drugs.json').then(r => r.json()).then(list => {
+  list.forEach(([en, ar, ing, p]) => { const d = {en, ar, ing, p, id: DRUGS.length}; d.c = BOX[d.id % BOX.length]; DRUGS.push(d); });
+  render();
+}).catch(() => {});
+
+// A medicine pack drawn as a box: white carton, one brand-colour band, name and strength on the front.
+function packArt(d, w = 52) {
+  const name = short(d.en).split(' ')[0].slice(0, 10);
+  const str = (d.en.match(/\d+(?:\.\d+)?\s*(?:MG|MCG|GM|G|ML|IU|%)(?:\/\d*\s*(?:ML|G|GM))?/i) || [''])[0].toLowerCase();
+  const fs = name.length > 7 ? 11 : 13;
+  return `<span class="packart" style="width:${w}px" aria-hidden="true"><svg viewBox="0 0 120 86"><polygon points="0,16 20,2 118,2 98,16" fill="#EEF2EF"/><polygon points="98,16 118,2 118,70 98,84" fill="${d.c}" opacity=".78"/><rect x="0" y="16" width="98" height="68" fill="#FFFFFF" stroke="#DDE3DF"/><rect x="0" y="58" width="98" height="18" fill="${d.c}"/><rect x="8" y="24" width="22" height="4" rx="2" fill="${d.c}"/><text x="8" y="44" direction="ltr" font-family="Alexandria" font-weight="800" font-size="${fs}" fill="#0D2A1F">${esc(name)}</text><text x="8" y="54" direction="ltr" font-family="Alexandria" font-weight="600" font-size="7.5" fill="${d.c}">${esc(str)}</text><text x="90" y="71" direction="ltr" text-anchor="end" font-family="Alexandria" font-weight="600" font-size="7" fill="#FFFFFF">${pack(d.en) ? pack(d.en) + ' TABS' : ''}</text></svg></span>`;
+}
+
+const PHARM = [
+  {id: 'p1', name: 'صيدلية الأمل', street: 'شارع عباس العقاد', m: 350, h24: true, del: true, fee: 20, x: 120, y: 120, mine: true, rep: 'د. منى'},
+  {id: 'p2', name: 'صيدلية النهار', ab: 'ن', street: 'مدينة نصر', m: 650, h24: true, del: true, fee: 25, x: 290, y: 66, rep: 'د. كريم'},
+  {id: 'p3', name: 'صيدلية السلام', ab: 'س', street: 'مدينة نصر', m: 900, h24: true, del: true, fee: 25, x: 340, y: 168, rep: 'د. ياسمين'},
+  {id: 'p4', name: 'صيدلية الشفاء', ab: 'ش', street: 'مدينة نصر', m: 1400, h24: true, del: true, fee: 20, x: 58, y: 186, rep: 'د. عمرو'},
+  {id: 'p5', name: 'صيدلية الحياة', ab: 'ح', street: 'مدينة نصر', m: 1800, h24: false, del: true, fee: 25, x: 236, y: 150, rep: 'د. هبة'},
+  {id: 'p6', name: 'صيدلية النور', ab: 'ن', street: 'مصر الجديدة', m: 2600, h24: false, del: true, fee: 30, x: 390, y: 104, rep: 'د. مصطفى'},
+];
+const SERVICE = 12;
+const TRENDING = [0, 3, 4, 2, 6];
+
+const S = {
+  role: 'patient',
+  pt: {screen: 'login', q: '', drug: null, ph: null, req: null, order: null, qty: 1, del: false, addr: '', phone: '', otp: '', rx: null, meds: [{id: 0, day: 5}], medq: ''},
+  rx: {tab: 'requests', sheet: null, q: '', import: null, sync: {on: false}, onboarded: false, ob: {name: 'صيدلية الأمل', addr: 'شارع عباس العقاد، مدينة نصر', phone: '01001234567', h24: true, del: true, fee: 20}},
+  inv: {0: true, 1: false, 2: true, 3: true, 4: true, 6: true, 8: true, 17: true},
+  at: {}, reqs: [], orders: [], stats: {asked: 9, answered: 8, orders: 3},
+};
+const T0 = Date.now();
+Object.keys(S.inv).forEach((id, k) => S.at[id] = T0 - (k + 1) * 11 * 60000);
+S.reqs.push({id: 'ra', drug: 12, ph: 'p1', status: 'pending', t: T0 - 2 * 60000, other: true});
+S.reqs.push({id: 'rb', drug: 9, ph: 'p1', status: 'pending', t: T0 - 6 * 60000, other: true});
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const egp = v => `${Number.isInteger(v) ? v : v.toFixed(2)} ج`;
+const egpLong = v => `${Number.isInteger(v) ? v : v.toFixed(2)} جنيه`;
+const short = en => en.replace(/\s+\d+\s+(F\.C\.|SUGAR|CAPS|TABS|TAB|CAPLETS|GASTRO).*$/i, '').replace(/\s+(TABS?|CAPS)\.?$/i, '').toLowerCase().replace(/(^|\s)([a-z])/g, (m, s, c) => s + c.toUpperCase()).replace(/\b(Mg|Gm|Ml)\b/g, m => m.toLowerCase());
+const pack = en => (en.match(/(\d+)\s+(F\.C\.|SUGAR|CAPS|TABS|TAB|CAPLETS)/i) || [])[1];
+const dist = m => m < 1000 ? `${m} متر` : `${(m / 1000).toFixed(1)} كم`;
+const walk = m => `${Math.max(2, Math.round(m / 80))} دقايق مشي`;
+const ago = t => { const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? 'دلوقتي' : m < 60 ? `من ${m} دقيقة` : `من ${Math.round(m / 60)} ساعة`; };
+const clock = t => new Date(t).toLocaleTimeString('ar-EG', {hour: 'numeric', minute: '2-digit'});
+const norm = s => s.toLowerCase().replace(/[إأآا]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, '');
+const hello = () => { const h = new Date().getHours(); return h < 12 ? 'صباح الخير' : 'مساء الخير'; };
+
+const I = {
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>',
+  down: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  cam: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  cross: '<svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="currentColor"/></svg>',
+  logo: '<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M44 32 V26 Q44 19 51 19 H63 Q70 19 70 26 V32" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/><rect x="22" y="32" width="70" height="66" rx="13" fill="#fff"/><path d="M51 49 H63 V59 H73 V71 H63 V81 H51 V71 H41 V59 H51 Z" fill="var(--sign)"/><path d="M99 50 H112 M101 65 H116 M99 80 H110" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".75"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>',
+  bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>',
+  me: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+  call: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+  route: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+  shelf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 12h16"/><path d="M8 8h2M8 16h3M14 16h2"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>',
+  check: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+};
+
+function stock(ph, id) {
+  if (ph.mine) return S.inv[id] === true ? 'in' : S.inv[id] === false ? 'out' : 'none';
+  const k = PHARM.indexOf(ph);
+  return (id + k) % 4 === 0 ? 'out' : 'in';
+}
+const nearCount = id => PHARM.filter(p => stock(p, id) === 'in').length;
+const badge = (p, small) => p.mine ? `<span class="xmark"${small ? ' style="width:36px;height:36px;border-radius:9px"' : ''}>${I.cross}</span>` : `<span class="chainb"${small ? ' style="width:36px;height:36px;border-radius:9px"' : ''}>${p.ab}</span>`;
+
+// A hand-drawn-feeling street map of the area, not a generic placeholder.
+function mapSVG(drugId, h = 220, focus) {
+  const pins = PHARM.map((p, i) => {
+    const st = drugId == null ? 'in' : stock(p, drugId);
+    if (st === 'none') return '';
+    const on = st === 'in', f = focus === p.id;
+    return `<g transform="translate(${p.x},${p.y})">
+      <circle r="${f ? 22 : 17}" fill="${on ? 'var(--sign)' : 'var(--bg)'}" stroke="${on ? '#fff' : 'var(--ink-3)'}" stroke-width="3"/>
+      <text text-anchor="middle" dy="5" font-size="14" font-weight="800" fill="${on ? '#fff' : 'var(--ink-3)'}" font-family="Alexandria">${i + 1}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 420 ${h}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect width="420" height="${h}" fill="var(--block)"/>
+    <path d="M-10 ${h * .78} C120 ${h * .7} 260 ${h * .95} 430 ${h * .82}" stroke="var(--street)" stroke-width="26" fill="none"/>
+    <path d="M60 -10 L90 ${h + 10}" stroke="var(--street)" stroke-width="18"/>
+    <path d="M250 -10 L215 ${h + 10}" stroke="var(--street)" stroke-width="22"/>
+    <path d="M-10 ${h * .35} L430 ${h * .25}" stroke="var(--street)" stroke-width="16"/>
+    <path d="M150 ${h * .3} L170 ${h * .72}" stroke="var(--street)" stroke-width="9"/>
+    <path d="M310 ${h * .25} L360 ${h * .85}" stroke="var(--street)" stroke-width="9"/>
+    <rect x="270" y="${h * .38}" width="40" height="${h * .22}" rx="6" fill="var(--sign-tint)"/>
+    <text x="232" y="${h * .2}" font-size="10" fill="var(--ink-3)" font-family="Alexandria" transform="rotate(-80 232 ${h * .2})">شارع مكرم عبيد</text>
+    <text x="20" y="${h * .33}" font-size="10" fill="var(--ink-3)" font-family="Alexandria">شارع عباس العقاد</text>
+    <g transform="translate(200,${h * .55})"><circle r="26" fill="var(--sign)" opacity=".12"/><circle r="8" fill="#2E7DF6" stroke="#fff" stroke-width="3"/></g>
+    ${pins}</svg>`;
+}
+
+// ───────── notification banner (looks like the phone's own) ─────────
+let nt;
+function notify(title, body, toRole) {
+  $('#over').innerHTML = `<button class="notif" data-act="${toRole && toRole !== S.role ? 'role' : 'dismiss'}" data-v="${toRole || ''}">
+    <span class="brandmark">${I.logo}</span><span class="g"><span class="h"><span>${toRole === 'pharmacist' ? 'Medfind للصيادلة' : 'Medfind'}</span><span>دلوقتي</span></span><b>${esc(title)}</b><p>${esc(body)}</p></span></button>`;
+  clearTimeout(nt); nt = setTimeout(() => { $('#over').innerHTML = ''; }, 5000);
+}
+
+// ───────── patient ─────────
+function nav(cur) {
+  const live = S.orders.filter(o => o.status !== 'completed' && o.status !== 'rejected').length;
+  const b = (k, ic, l, n) => `<button data-act="pnav" data-v="${k}" ${cur === k ? 'aria-current="page"' : ''}>${ic}${l}${n ? `<span class="n">${n}</span>` : ''}</button>`;
+  return `<nav class="nav">${b('home', I.home, 'الرئيسية')}${b('orders', I.bag, 'طلباتي', live)}${b('me', I.me, 'حسابي')}</nav>`;
+}
+
+// Ranked search over the whole list: name starts with > name contains > active ingredient.
+function searchDrugs(q) {
+  const nq = norm(q), lq = q.toLowerCase().trim(), out = [];
+  for (const d of DRUGS) {
+    const en = d.en.toLowerCase(), ar = d._ar || (d._ar = norm(d.ar || ''));
+    let s = -1;
+    if (en.startsWith(lq) || (nq && ar.startsWith(nq))) s = 0;
+    else if (en.includes(lq) || (nq && ar.includes(nq))) s = 1;
+    else if (d.ing.toLowerCase().includes(lq)) s = 2;
+    if (s >= 0) out.push([s, d]);
+  }
+  out.sort((a, b) => a[0] - b[0] || a[1].en.length - b[1].en.length);
+  return out.slice(0, 40).map(x => x[1]);
+}
+
+function ptHome() {
+  const q = S.pt.q.trim();
+  const res = q.length < 2 ? [] : searchDrugs(q);
+  const body = q.length >= 2 ? `<div class="rows" style="margin-top:8px">${res.length ? res.map(d => `
+      <button class="prow" data-act="drug" data-v="${d.id}" style="border-width:0 0 1px;background:none;text-align:start;width:100%">
+        ${packArt(d, 56)}
+        <span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>${esc(d.ar)}، ${pack(d.en) ? pack(d.en) + ' قرص' : esc(d.ing)}</small></span>
+        <span style="font-weight:600">${egp(d.p)}</span></button>`).join('') : `<p class="muted" style="text-align:center;margin:30px 0">مفيش دوا بالاسم ده. جرّب تكتبه بالإنجليزي.</p>`}</div>`
+    : `<p class="faint" style="font-size:12px;margin:10px 2px 0">بندوّر في ${DRUGS.length.toLocaleString('ar-EG')} دوا مصري بأسعارها الرسمية</p><div class="sec"><h2>ناس بتدوّر عليه دلوقتي</h2><span>مدينة نصر</span></div>
+      <div class="shelf">${TRENDING.map(id => { const d = DRUGS[id], n = nearCount(id); return `
+        <button class="pack" data-act="drug" data-v="${id}">${packArt(d, 148)}
+        <b>${esc(d.ar)}</b>${n < 2 ? '<span class="short">قليل في المنطقة</span>' : `<small>${n} صيدليات عندها</small>`}</button>`; }).join('')}</div>
+      <div class="sec"><h2>صيدليات فاتحة جنبك</h2></div>
+      <div class="rows">${PHARM.slice(0, 5).map(p => `<div class="prow">${badge(p)}<span class="g"><b>${p.name}</b><small>${p.street}، ${dist(p.m)}</small></span><span class="open">${p.h24 ? '24 ساعة' : 'لحد 12 بالليل'}</span></div>`).join('')}</div>`;
+  return `<div class="screen">
+    <div class="top"><span class="brandmark" aria-label="Medfind">${I.logo}</span><button class="loc">${I.pin}مدينة نصر${I.down}</button><span style="flex:1"></span><span class="avatar">س</span></div>
+    <div class="pad"><h1 class="hello">${hello()}،<br>بتدوّر على دوا إيه؟</h1>
+      <label class="searchbox">${I.search}<input id="q" value="${esc(S.pt.q)}" placeholder="اسم الدوا أو المادة الفعالة" autocomplete="off" aria-label="اسم الدوا"><button class="cam" aria-label="صوّر الروشتة أو العلبة">${I.cam}</button></label>
+      ${body}<p class="faint" style="font-size:12px;margin:22px 0 0">عرض تجريبي: أسماء الصيدليات للتوضيح، والمخزون والطلبات محاكاة. الأدوية والأسعار من قاعدة البيانات الحقيقية.</p><div style="height:24px"></div></div>
+    ${nav('home')}</div>`;
+}
+
+function ptResults() {
+  const d = DRUGS[S.pt.drug];
+  const list = PHARM.map((p, i) => ({p, i, s: stock(p, d.id)})).filter(x => x.s !== 'none');
+  return `<div class="screen">
+    <div class="map">${mapSVG(d.id)}<button class="ib" data-act="go" data-v="home" aria-label="رجوع" style="position:absolute;top:10px;inset-inline-start:10px;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.12)">${I.back}</button></div>
+    <div class="drughead" style="display:flex;gap:14px;align-items:center">${packArt(d, 92)}<div style="flex:1;min-width:0"><div class="name en" style="text-align:right">${esc(short(d.en))}</div><div class="meta">${esc(d.ar)}${pack(d.en) ? `، علبة ${pack(d.en)} قرص` : ''}، السعر الرسمي ${egpLong(d.p)}</div></div></div>
+    ${list.map(({p, i, s}) => `<div class="res">
+      <span class="num ${s}">${i + 1}</span>
+      <div class="g"><b>${p.name}</b><small>${p.street}، ${dist(p.m)} (${walk(p.m)})</small>
+        <span class="stock ${s}"><i></i>${s === 'in' ? `موجود، آخر تحديث ${p.mine ? ago(S.at[d.id] || Date.now()) : 'من 3 ساعات'}` : 'خلص عندهم'}</span>
+        ${s === 'in' ? `<div class="ask"><button class="cta small" data-act="ask" data-v="${p.id}">اسأل الصيدلية</button><button class="sq" aria-label="اتصل">${I.call}</button><button class="sq" aria-label="الطريق">${I.route}</button></div>` : ''}
+      </div></div>`).join('')}
+    ${altsBlock(d)}
+    <div style="height:30px"></div></div>`;
+}
+
+// Same active ingredient, different brand: what the patient can ask the pharmacist about.
+function altsBlock(d) {
+  if (!d.ing) return '';
+  const alts = DRUGS.filter(x => x.id !== d.id && x.ing === d.ing).sort((a, b) => a.p - b.p).slice(0, 8);
+  if (!alts.length) return '';
+  return `<div class="sec pad" style="margin:22px 0 8px"><h2>بدائل بنفس المادة الفعالة</h2><span>اسأل الصيدلي قبل ما تبدّل</span></div>
+    <div class="altrow">${alts.map(a => `<button class="alt" data-act="drug" data-v="${a.id}">${packArt(a, 118)}<b class="en" style="text-align:right">${esc(short(a.en))}</b><small>${egpLong(a.p)}</small></button>`).join('')}</div>`;
+}
+
+function ptChat() {
+  const r = S.reqs.find(x => x.id === S.pt.req), p = PHARM.find(x => x.id === r.ph), d = DRUGS[r.drug];
+  const reply = r.status === 'available' ? `أيوه موجود، عندنا ${r.qty || 3} علب. تحب نشيلهولك؟` : 'للأسف خلص، والطلبية الجاية الأسبوع الجاي.';
+  return `<div class="screen">
+    <div class="top" style="border-bottom:1px solid var(--rule)"><button class="ib" data-act="go" data-v="results" aria-label="رجوع">${I.back}</button>${badge(p, true)}<span class="t">${p.name}<br><small class="faint" style="font-weight:400;font-size:12px">${r.status === 'pending' ? 'بيكتب…' : 'بترد في دقيقتين عادة'}</small></span><button class="ib" aria-label="اتصل">${I.call}</button></div>
+    <div class="chat">
+      <span class="stamp">النهارده ${clock(r.t)}</span>
+      <div class="msg me">عندكم <span class="en">${esc(short(d.en))}</span>؟<small>${clock(r.t)}</small></div>
+      ${r.status === 'pending' ? '<div class="typing" aria-label="الصيدلية بتكتب"><i></i><i></i><i></i></div>' : `<div class="msg them"><span class="who">${p.rep}، ${p.name}</span>${reply}<small>${clock(r.at)}</small></div>`}
+    </div>
+    ${r.status === 'available' ? `<div class="dock"><button class="cta" data-act="checkout" data-v="0">احجزه وهعدّي آخده</button>${p.del ? `<button class="cta line" data-act="checkout" data-v="1">ابعتهولي البيت</button>` : ''}</div>`
+      : r.status === 'unavailable' ? `<div class="dock"><button class="cta line" data-act="go" data-v="results">شوف صيدلية تانية</button></div>` : ''}
+  </div>`;
+}
+
+function ptCheckout() {
+  const d = DRUGS[S.pt.drug], p = PHARM.find(x => x.id === S.pt.ph), dl = S.pt.del;
+  const drugs = d.p * S.pt.qty, fee = dl ? p.fee : 0;
+  return `<div class="screen">
+    <div class="top"><button class="ib" data-act="go" data-v="chat" aria-label="رجوع">${I.back}</button><span class="t">تأكيد الطلب</span></div>
+    <div class="pad" style="display:flex;flex-direction:column;gap:16px">
+      <div class="choice" role="group" aria-label="طريقة الاستلام">
+        <button data-act="mode" data-v="0" aria-pressed="${!dl}"><b>هعدّي آخده</b><small>محجوز باسمك ساعتين</small></button>
+        <button data-act="mode" data-v="1" aria-pressed="${dl}" ${p.del ? '' : 'disabled'}><b>توصيل</b><small>${p.del ? `طيار الصيدلية، ${egpLong(p.fee)}` : 'الصيدلية دي مش بتوصّل'}</small></button>
+      </div>
+      ${dl ? `<textarea class="addr" id="addr" placeholder="العنوان: الشارع، العمارة، الدور، الشقة" aria-label="عنوان التوصيل">${esc(S.pt.addr)}</textarea>` : ''}
+      <div class="stepper"><span style="flex:1">عدد العلب</span><button data-act="qty" data-v="-1" aria-label="أقل">−</button><b style="min-width:20px;text-align:center">${S.pt.qty}</b><button data-act="qty" data-v="1" aria-label="أكتر">+</button></div>
+      <div class="rxbox">${S.pt.rx ? `<img src="${S.pt.rx}" alt="الروشتة">` : `<span class="sq" style="width:56px;height:56px">${I.cam}</span>`}
+        <label for="rxfile"><b style="display:block;font-size:15px">${S.pt.rx ? 'الروشتة اترفعت' : 'صوّر الروشتة'}</b><small class="muted" style="font-size:12px">${S.pt.rx ? 'الصيدلي هيراجعها قبل ما يجهز الدوا. دوس لو عايز تغيّرها.' : 'لو الدوا بروشتة، الصيدلي لازم يشوفها قبل التسليم.'}</small></label>
+        <input id="rxfile" type="file" accept="image/*" capture="environment" style="display:none"></div>
+    </div>
+    <div class="receipt" role="table" aria-label="الفاتورة">
+      <div class="rl"><span><span class="en">${esc(short(d.en))}</span> × ${S.pt.qty}</span><span>${egpLong(drugs)}</span></div>
+      <div class="rl"><span class="muted">خدمة Medfind</span><span>${egpLong(SERVICE)}</span></div>
+      ${dl ? `<div class="rl"><span class="muted">التوصيل</span><span>${egpLong(fee)}</span></div>` : ''}
+      <div class="rl tot"><span>الإجمالي</span><span>${egpLong(drugs + SERVICE + fee)}</span></div>
+    </div>
+    <p class="faint pad" style="font-size:12px;margin:18px 0 0">سعر الدوا هو المكتوب على العلبة بالظبط. الدفع ${dl ? 'كاش للطيار' : 'في الصيدلية'}.</p>
+    <div style="flex:1"></div>
+    <div class="dock"><button class="cta" data-act="place">${dl ? 'اطلب' : 'احجز'} بـ ${egpLong(drugs + SERVICE + fee)}</button></div>
+  </div>`;
+}
+
+const STEPS = {
+  pickup: [['placed', 'الطلب وصل للصيدلية'], ['accepted', 'الصيدلية بتجهز العلبة'], ['ready', 'جاهز، عدّي خده'], ['completed', 'استلمته']],
+  delivery: [['placed', 'الطلب وصل للصيدلية'], ['accepted', 'الصيدلية بتجهز طلبك'], ['out', 'الطيار في الطريق'], ['completed', 'وصلك']],
+};
+function ptTrack() {
+  const o = S.orders.find(x => x.id === S.pt.order);
+  if (!o) return ptOrdersList();
+  const p = PHARM.find(x => x.id === o.ph), d = DRUGS[o.drug];
+  const st = STEPS[o.del ? 'delivery' : 'pickup'], idx = st.findIndex(s => s[0] === o.status);
+  return `<div class="screen">
+    <div class="route">${mapSVG(null, 170, p.id)}<button class="ib" data-act="pnav" data-v="orders" aria-label="رجوع" style="position:absolute;top:10px;inset-inline-start:10px;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.12)">${I.back}</button></div>
+    <div class="pad" style="padding-top:16px"><div style="font-size:22px;font-weight:800">${o.status === 'completed' ? (o.del ? 'وصلك. ألف سلامة' : 'استلمته. ألف سلامة') : o.status === 'cancelled' ? 'الطلب اتلغى' : o.status === 'rejected' ? 'الصيدلية مقدرتش تنفذ الطلب' : st[idx][1]}</div>
+      <div class="muted" style="font-size:13px">${p.name}، <span class="en">${esc(short(d.en))}</span> × ${o.qty}</div>
+      ${!o.del && !['completed', 'cancelled', 'rejected'].includes(o.status) ? `<div style="margin-top:8px"><span class="chip2">محجوز باسمك لحد ${clock(o.t + 2 * 3600000)}</span></div>` : ''}</div>
+    <div class="tl" style="${['cancelled', 'rejected'].includes(o.status) ? 'display:none' : ''}">${st.map((s, i) => { const c = o.status === 'completed' || i < idx ? 'done' : i === idx ? 'now' : 'next'; return `<div class="tli ${c}"><span class="d"></span><span><b>${s[1]}</b>${c === 'done' && s[0] !== 'completed' ? `<small>${clock(o.t + i * 60000)}</small>` : ''}</span></div>`; }).join('')}</div>
+    <div class="receipt" style="margin-top:4px"><div class="rl tot" style="border:0;margin:0;padding:0"><span>الإجمالي</span><span>${egpLong(o.total)}</span></div></div>
+    <div style="flex:1;min-height:20px"></div>
+    <div class="dock">${o.status === 'placed' ? `<button class="cta line" style="color:var(--red)" data-act="cancel" data-v="${o.id}">إلغاء الطلب</button>` : ''}${['completed', 'cancelled', 'rejected'].includes(o.status) ? '<button class="cta" data-act="pnav" data-v="home">دوّر على دوا تاني</button>' : `<button class="cta line">${I.call.replace('<svg', '<svg width="18" height="18" style="vertical-align:-3px;margin-inline-end:6px"')}كلّم ${p.name}</button>`}</div>
+  </div>`;
+}
+
+function ptOrdersList() {
+  const list = [...S.orders].reverse();
+  return `<div class="screen"><div class="top"><span class="t" style="font-size:20px;font-weight:800;padding:0 8px">طلباتي</span></div>
+    ${list.length ? list.map(o => { const d = DRUGS[o.drug], p = PHARM.find(x => x.id === o.ph); const lbl = STEPS[o.del ? 'delivery' : 'pickup'].find(s => s[0] === o.status); return `
+      <button class="prow pad" data-act="open" data-v="${o.id}" style="border-width:0 0 1px;background:none;width:100%;text-align:start;padding:14px 20px">
+      ${packArt(d, 56)}<span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>${p.name}، ${lbl ? lbl[1] : o.status === 'cancelled' ? 'اتلغى' : 'اترفض'}</small></span><span style="font-weight:600">${egp(o.total)}</span></button>`; }).join('')
+    : '<p class="muted pad" style="text-align:center;margin-top:60px">لسه ما طلبتش حاجة. لما تحجز أو تطلب دوا هتلاقيه هنا.</p>'}
+    ${nav('orders')}</div>`;
+}
+
+function ptMe() {
+  return `<div class="screen"><div class="top"><span class="t" style="font-size:20px;font-weight:800;padding:0 8px">حسابي</span></div>
+    <div class="pad"><div class="prow"><span class="avatar" style="width:52px;height:52px;font-size:20px">س</span><span class="g"><b>سيف</b><small class="en" style="text-align:right">010 0123 4567</small></span></div>
+    <div class="prow"><span class="g"><b>عناويني</b><small>البيت، مدينة نصر</small></span></div>
+    <button class="prow" data-act="go" data-v="meds" style="width:100%;border-width:0 0 1px;background:none;text-align:start"><span class="g"><b>أدويتي الشهرية</b><small>${S.pt.meds.length ? `${S.pt.meds.length} دوا، وهنفكّرك قبل ما يخلصوا` : 'فكّرني لما الدوا قرب يخلص'}</small></span>${I.back.replace('<svg', '<svg width="18" height="18" style="transform:scaleX(-1)"')}</button>
+    <div class="prow"><span class="g"><b>اللغة</b><small>العربية</small></span></div>
+    <button class="cta line" style="margin-top:20px" data-act="logout">تسجيل الخروج</button></div>
+    ${nav('me')}</div>`;
+}
+
+function ptLogin() {
+  const sent = S.pt.screen === 'otp';
+  return `<div class="screen login">
+    <span class="brandmark" style="width:56px;height:56px;border-radius:16px">${I.logo}</span>
+    <h1>${sent ? 'اكتب الكود' : 'دوّر على دواك<br>من غير ما تلف'}</h1>
+    <p>${sent ? `بعتنا كود من 6 أرقام على <span class="en">${esc(S.pt.phone || '01xxxxxxxxx')}</span>. في الديمو أي كود ينفع.` : 'هنقولك أقرب صيدلية عندها الدوا، والصيدلية تأكد قبل ما تتحرك.'}</p>
+    ${sent ? `<input id="otp" class="inp otp en" inputmode="numeric" maxlength="6" placeholder="••••••" value="${esc(S.pt.otp)}" aria-label="كود التأكيد">
+      <button class="cta" data-act="verify">تأكيد ودخول</button>
+      <button class="cta line" data-act="go" data-v="login">غيّر الرقم</button>`
+    : `<input id="phone" class="inp en" inputmode="tel" placeholder="01xxxxxxxxx" value="${esc(S.pt.phone)}" aria-label="رقم الموبايل" style="text-align:right">
+      <button class="cta" data-act="sendotp">ابعت الكود</button>
+      <button class="cta line" data-act="trial">جرّب من غير رقم</button>`}
+    <p class="faint" style="font-size:12px;margin-top:auto;text-align:center">بالدخول انت موافق على الشروط وسياسة الخصوصية.</p>
+  </div>`;
+}
+
+function ptMeds() {
+  const q = S.pt.medq || '', res = q.trim().length < 2 ? [] : searchDrugs(q).slice(0, 6);
+  return `<div class="screen">
+    <div class="top"><button class="ib" data-act="go" data-v="me" aria-label="رجوع">${I.back}</button><span class="t">أدويتي الشهرية</span></div>
+    <div class="pad">
+      <p class="muted" style="margin:0 0 12px;font-size:14px">ضيف الأدوية اللي بتاخدها كل شهر، وهنفكّرك قبل ما تخلص ونقولك فين موجودة.</p>
+      ${S.pt.meds.map((m, i) => { const d = DRUGS[m.id]; return `<div class="mrow">${packArt(d, 52)}<span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>هنفكّرك يوم ${m.day} من كل شهر، و${nearCount(d.id)} صيدليات جنبك عندها</small></span>
+        <button class="sq" data-act="medday" data-v="${i}" aria-label="غيّر اليوم" style="font-weight:700">${m.day}</button><button class="sq" data-act="meddel" data-v="${i}" aria-label="شيل" style="color:var(--red)">×</button></div>`; }).join('')}
+      <label class="searchbox" style="margin-top:16px">${I.search}<input id="medq" value="${esc(q)}" placeholder="ضيف دوا" autocomplete="off" aria-label="ضيف دوا"></label>
+      ${res.map(d => `<button class="mrow" data-act="medadd" data-v="${d.id}" style="width:100%;border-width:0 0 1px;background:none;text-align:start">${packArt(d, 44)}<span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>${esc(d.ar)}، ${egpLong(d.p)}</small></span><span class="open">ضيف</span></button>`).join('')}
+    </div>
+    ${nav('me')}</div>`;
+}
+
+// ───────── pharmacist ─────────
+function rxOnboard() {
+  const o = S.rx.ob;
+  const sw = (k, label) => `<div class="tg"><span>${label}</span><button class="sw" role="switch" aria-checked="${o[k]}" data-act="obtoggle" data-v="${k}" aria-label="${label}"></button></div>`;
+  return `<div class="screen login" style="padding-top:28px">
+    <span class="brandmark" style="width:56px;height:56px;border-radius:16px">${I.logo}</span>
+    <h1>سجّل صيدليتك</h1>
+    <p>خمس دقايق، وتبدأ تستقبل زباين بيدوّروا على أدوية عندك.</p>
+    <label class="field"><span>اسم الصيدلية</span><input id="ob-name" class="inp" value="${esc(o.name)}"></label>
+    <label class="field"><span>العنوان</span><input id="ob-addr" class="inp" value="${esc(o.addr)}"></label>
+    <label class="field"><span>رقم الصيدلية</span><input id="ob-phone" class="inp en" inputmode="tel" value="${esc(o.phone)}" style="text-align:right"></label>
+    <button class="cta line" data-act="pinloc">${I.pin.replace('<svg', '<svg width="18" height="18" style="vertical-align:-3px;margin-inline-end:6px;color:var(--sign)"')}${S.rx.pinned ? 'المكان اتحدد على الخريطة' : 'حدد مكان الصيدلية من موقعك'}</button>
+    ${sw('h24', 'فاتحة 24 ساعة')}${sw('del', 'عندنا توصيل')}
+    ${o.del ? `<label class="field"><span>رسوم التوصيل (جنيه)</span><input id="ob-fee" class="inp en" inputmode="numeric" value="${o.fee}" style="text-align:right"></label>` : ''}
+    <button class="cta" data-act="onboard">ابدأ استقبل زباين</button>
+  </div>`;
+}
+
+// What people around this pharmacy look for, and what it doesn't carry yet.
+function rxMarket() {
+  const base = {3: 23, 0: 18, 12: 14, 9: 11, 20: 9, 15: 7, 4: 6, 6: 5};
+  S.reqs.forEach(r => { base[r.drug] = (base[r.drug] || 0) + 1; });
+  const rows = Object.entries(base).map(([id, n]) => ({d: DRUGS[+id], n})).sort((a, b) => b.n - a.n);
+  const max = rows[0].n, missing = rows.filter(r => !S.inv[r.d.id]);
+  return rxShell(`<div class="pad" style="padding-top:16px">
+    <div class="sec" style="margin-top:0"><h2>الأكتر طلبًا حواليك</h2><span>آخر 7 أيام، 2 كم</span></div>
+    ${rows.slice(0, 6).map(r => `<div class="mrow">${packArt(r.d, 44)}<span class="g"><b class="en" style="text-align:right">${esc(short(r.d.en))}</b><span style="display:flex;align-items:center;gap:8px;margin-top:4px"><span class="bar2"><i style="width:${Math.round(r.n / max * 100)}%"></i></span><small>${r.n} سؤال</small></span></span></div>`).join('')}
+    <div class="sec"><h2>مطلوبة ومش على رفوفك</h2><span>فرصة تطلبها من الموزع</span></div>
+    ${missing.length ? missing.map(r => `<div class="mrow">${packArt(r.d, 44)}<span class="g"><b class="en" style="text-align:right">${esc(short(r.d.en))}</b><small>${r.n} زبون سأل عليه، و${nearCount(r.d.id)} صيدليات بس حواليك عندها</small></span><button class="cta small" style="flex:none;padding:0 12px" data-act="addinv" data-v="${r.d.id}">عندي</button></div>`).join('') : '<p class="muted">كل الأدوية المطلوبة في منطقتك موجودة عندك.</p>'}
+    <div style="height:24px"></div></div>`);
+}
+
+function rxShell(inner) {
+  const pend = S.reqs.filter(r => r.ph === 'p1' && r.status === 'pending').length;
+  const open = S.orders.filter(o => o.ph === 'p1' && !['completed', 'rejected'].includes(o.status)).length;
+  const b = (k, ic, l, n) => `<button data-act="tab" data-v="${k}" ${S.rx.tab === k ? 'aria-current="page"' : ''}>${ic}${l}${n ? `<span class="n">${n}</span>` : ''}</button>`;
+  return `<div class="screen">
+    <header class="ph-head"><div class="t">${esc(S.rx.ob.name)}</div><div class="s">${esc(S.rx.ob.addr)}</div>
+      <div class="today"><div><b>${S.stats.asked + S.reqs.filter(r => !r.other).length}</b><span>سؤال النهارده</span></div><div><b>${S.stats.orders + S.orders.filter(o => o.ph === 'p1').length}</b><span>طلب</span></div><div><b>1:40</b><span>متوسط ردك</span></div></div></header>
+    ${inner}
+    <nav class="nav" style="grid-template-columns:repeat(4,1fr)">${b('requests', I.bell, 'الأسئلة', pend)}${b('orders', I.bag, 'الطلبات', open)}${b('inventory', I.shelf, 'الرفوف', 0)}${b('market', I.search, 'منطقتك', 0)}</nav></div>`;
+}
+function rxRequests() {
+  const list = S.reqs.filter(r => r.ph === 'p1' && r.status === 'pending').sort((a, b) => b.t - a.t);
+  return rxShell(list.length ? list.map(r => { const d = DRUGS[r.drug]; return `<div class="q ${r.other ? '' : 'new'}">
+      <div class="who">زبون على بعد ${r.other ? '900 متر' : '350 متر'}، ${ago(r.t)}</div>
+      <div class="drug en" style="text-align:right">${esc(short(d.en))}</div>
+      <div class="bigbtns"><button class="yes" data-act="answer" data-v="${r.id}:1">موجود</button><button class="nope" data-act="answer" data-v="${r.id}:0">خلص</button></div></div>`; }).join('')
+    : '<p class="muted pad" style="text-align:center;margin:60px 0">مفيش حد مستني رد. أول ما زبون يسأل على دوا عندك هيظهر هنا ويرنّ.</p>');
+}
+function rxOrders() {
+  const list = S.orders.filter(o => o.ph === 'p1').sort((a, b) => b.t - a.t);
+  const next = o => o.status === 'placed' ? `<div class="bigbtns" style="margin-top:12px"><button class="yes" data-act="adv" data-v="${o.id}:accepted">قبول</button><button class="nope" data-act="adv" data-v="${o.id}:rejected">رفض</button></div>`
+    : o.status === 'accepted' ? `<button class="cta" style="margin-top:12px" data-act="adv" data-v="${o.id}:${o.del ? 'out' : 'ready'}">${o.del ? 'خرج مع الطيار' : 'جاهز للزبون'}</button>`
+    : (o.status === 'ready' || o.status === 'out') ? `<button class="cta" style="margin-top:12px" data-act="adv" data-v="${o.id}:completed">اتسلّم</button>`
+    : `<span class="status-chip" style="margin-top:10px">${o.status === 'rejected' ? 'اترفض' : o.status === 'cancelled' ? 'الزبون لغاه' : 'اتسلّم'}</span>`;
+  return rxShell(list.length ? list.map(o => { const d = DRUGS[o.drug]; return `<div class="order" style="${o.status === 'placed' ? 'background:var(--amber-tint)' : ''}">
+      <div class="k"><b>${o.del ? 'توصيل' : 'هيعدّي ياخده'}</b><span class="faint" style="font-size:12px">${ago(o.t)}</span></div>
+      <div class="en" style="text-align:right;margin-top:4px">${o.qty} × ${esc(short(d.en))}</div>
+      ${o.del ? `<div class="faint" style="font-size:13px">${esc(o.addr || 'مدينة نصر، شارع الطيران، عمارة 12')}</div>` : ''}
+      ${o.rx ? `<div class="rxbox" style="margin-top:10px"><img src="${o.rx}" alt="الروشتة"><span><b style="display:block;font-size:14px">روشتة مرفقة</b><small class="muted" style="font-size:12px">راجعها قبل ما تجهز الطلب</small></span></div>` : ''}
+      <div class="money">حصّل ${egpLong(o.total)}</div>
+      <div class="split">منهم ${egpLong(SERVICE)} لـ Medfind بتتحاسب آخر الشهر</div>${next(o)}</div>`; }).join('')
+    : '<p class="muted pad" style="text-align:center;margin:60px 0">مفيش طلبات لسه. لما زبون يحجز أو يطلب توصيل من عندك هيظهر هنا.</p>');
+}
+function rxInventory() {
+  const ids = Object.keys(S.inv).map(Number).sort((a, b) => (S.at[b] || 0) - (S.at[a] || 0));
+  const sy = S.rx.sync;
+  const card = sy.on
+    ? `<div class="stockcard on"><b>مربوط ببرنامج المخزون</b><small>آخر تحديث ${ago(sy.at)}، ${sy.count.toLocaleString('ar-EG')} صنف. كل ما الصنف يخلص أو يوصل عندك بيتحدّث هنا لوحده.</small><div class="acts"><button class="cta small" data-act="sheet" data-v="sync">حدّث دلوقتي</button><button class="cta small line" data-act="sheet" data-v="add">ضيف صنف بإيدك</button></div></div>`
+    : `<div class="stockcard"><b>المخزون بتاعك على Medfind</b><small>اربط برنامج المخزون مرة واحدة والأصناف تتحدّث لوحدها، أو ضيف الأصناف المهمة بإيدك.</small><div class="acts"><button class="cta small" data-act="sheet" data-v="sync">اربط برنامج المخزون</button><button class="cta small line" data-act="sheet" data-v="add">ضيف بإيدك</button></div></div>`;
+  return rxShell(card + ids.map(id => { const d = DRUGS[id]; return `<div class="inv">${packArt(d, 48)}<span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>${S.inv[id] ? 'موجود' : 'خلص'}، اتحدّث ${ago(S.at[id])}</small></span>
+      <button class="sw" role="switch" aria-checked="${S.inv[id]}" aria-label="موجود" data-act="toggle" data-v="${id}"></button></div>`; }).join(''));
+}
+
+// Bottom sheets for the shelves tab: connect the stock system, or add an item by hand.
+function stockSheet() {
+  const k = S.rx.sheet;
+  if (k === 'sync') {
+    const im = S.rx.import;
+    return `<div class="shade" data-act="closesheet"><div class="sheet" role="dialog" aria-label="ربط برنامج المخزون" data-keep="1"><span class="handle"></span>
+      <b style="font-size:19px">اربط برنامج المخزون</b>
+      <p class="muted" style="margin:0;font-size:14px">اختار الطريقة اللي تناسب البرنامج اللي شغال عندك.</p>
+      ${im ? `<div style="padding:8px 0"><b>${im.done ? `اتحدّث ${im.count.toLocaleString('ar-EG')} صنف` : 'بنقرا الملف ونطابق الأصناف…'}</b><div class="bar" style="margin-top:10px"><i style="width:${im.pct}%"></i></div>
+        ${im.done ? `<p class="muted" style="font-size:13px;margin:10px 0 0">اتطابق ${im.matched.toLocaleString('ar-EG')} صنف مع قاعدة الأدوية، و${(im.count - im.matched).toLocaleString('ar-EG')} محتاجين مراجعة.</p><button class="cta" style="margin-top:14px" data-act="closesheet">تمام</button>` : ''}</div>`
+      : `<button class="optrow" data-act="import"><span class="ic">${I.shelf}</span><span><b>ارفع ملف المخزون</b><small>ملف Excel أو CSV من برنامج الصيدلية. ارفعه كل يوم أو كل ما تحب.</small></span></button>
+      <button class="optrow" data-act="api"><span class="ic">${I.route}</span><span><b>ربط مباشر مع البرنامج</b><small>المخزون يتحدّث أوتوماتيك من غير ما ترفع حاجة. فريقنا بيظبطه معاك.</small></span></button>`}
+    </div></div>`;
+  }
+  const q = S.rx.q || '', res = q.trim().length < 2 ? [] : searchDrugs(q).slice(0, 12);
+  return `<div class="shade" data-act="closesheet"><div class="sheet" role="dialog" aria-label="ضيف صنف" data-keep="1"><span class="handle"></span>
+    <b style="font-size:19px">ضيف صنف بإيدك</b>
+    <label class="searchbox">${I.search}<input id="rxq" value="${esc(q)}" placeholder="اسم الصنف" autocomplete="off" aria-label="اسم الصنف"></label>
+    <div>${res.map(d => `<div class="match">${packArt(d, 44)}<span class="g"><b class="en" style="text-align:right">${esc(short(d.en))}</b><small>${esc(d.ar)}، ${egpLong(d.p)}</small></span>
+      ${S.inv[d.id] ? '<span class="faint" style="font-size:13px">متضاف</span>' : `<button class="cta small" style="flex:none;padding:0 14px" data-act="addinv" data-v="${d.id}">ضيف</button>`}</div>`).join('')}
+    ${q.trim().length >= 2 && !res.length ? '<p class="muted" style="font-size:14px">مفيش صنف بالاسم ده.</p>' : ''}</div>
+  </div></div>`;
+}
+
+function render() {
+  const keepId = document.activeElement && ['q', 'rxq', 'medq'].includes(document.activeElement.id) ? document.activeElement.id : null;
+  let h;
+  if (S.role === 'patient') h = ({login: ptLogin, otp: ptLogin, home: ptHome, results: ptResults, chat: ptChat, checkout: ptCheckout, track: ptTrack, orders: ptOrdersList, me: ptMe, meds: ptMeds})[S.pt.screen]();
+  else h = !S.rx.onboarded ? rxOnboard() : ({requests: rxRequests, orders: rxOrders, inventory: rxInventory, market: rxMarket})[S.rx.tab]();
+  h += `<button class="demo" data-act="role" data-v="${S.role === 'patient' ? 'pharmacist' : 'patient'}">${I.swap}${S.role === 'patient' ? 'شوف تطبيق الصيدلي' : 'ارجع لتطبيق المريض'}</button>`;
+  if (S.role === 'pharmacist' && S.rx.sheet) h += stockSheet();
+  $('#app').innerHTML = h;
+  if (keepId) { const q = document.getElementById(keepId); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
+}
+const go = s => { S.pt.screen = s; render(); window.scrollTo(0, 0); };
+
+// ───────── the other side, simulated ─────────
+function answer(id, ok, byUser) {
+  const r = S.reqs.find(x => x.id === id);
+  if (!r || r.status !== 'pending') return;
+  r.status = ok ? 'available' : 'unavailable'; r.at = Date.now(); r.qty = 3;
+  if (r.ph === 'p1') { S.inv[r.drug] = ok; S.at[r.drug] = Date.now(); }
+  if (!r.other) {
+    if (S.role === 'pharmacist' && byUser) notify(`${PHARM[0].name} ردت عليك`, ok ? 'أيوه موجود، عندنا 3 علب.' : 'للأسف خلص.', 'patient');
+    else if (S.role === 'patient' && S.pt.screen !== 'chat') notify(`${PHARM.find(p => p.id === r.ph).name} ردت عليك`, ok ? 'أيوه موجود.' : 'للأسف خلص.', 'patient');
+  }
+  render();
+}
+const LBL = {accepted: 'الصيدلية قبلت طلبك', ready: 'طلبك جاهز، عدّي خده', out: 'الطيار خرج بطلبك', completed: 'الطلب اتسلّم. ألف سلامة', rejected: 'الصيدلية مقدرتش تنفذ طلبك'};
+function adv(id, to, byUser) {
+  const o = S.orders.find(x => x.id === id); if (!o) return;
+  o.status = to;
+  if (S.role === 'pharmacist' && byUser) notify(LBL[to], 'الزبون شايف التحديث دلوقتي.', 'patient');
+  else if (S.role === 'patient' && S.pt.screen !== 'track') notify(LBL[to], PHARM.find(p => p.id === o.ph).name, 'patient');
+  render();
+}
+function autoAnswer(id) {
+  setTimeout(() => { const r = S.reqs.find(x => x.id === id); if (!r || r.status !== 'pending') return; if (S.role === 'patient') answer(id, true, false); else autoAnswer(id); }, 5000);
+}
+function autoMove(id) {
+  setTimeout(function step() {
+    const o = S.orders.find(x => x.id === id); if (!o || ['completed', 'rejected'].includes(o.status)) return;
+    if (S.role === 'patient') adv(id, {placed: 'accepted', accepted: o.del ? 'out' : 'ready', ready: 'completed', out: 'completed'}[o.status], false);
+    setTimeout(step, 6000);
+  }, 6000);
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  if (el.dataset.act === 'closevoice' && e.target.closest('[data-keep]')) return;
+  const v = el.dataset.v;
+  switch (el.dataset.act) {
+    case 'dismiss': $('#over').innerHTML = ''; break;
+    case 'role': if (v) { S.role = v; $('#over').innerHTML = ''; render(); window.scrollTo(0, 0); } break;
+    case 'pnav': S.pt.q = ''; go(v); break;
+    case 'go': go(v); break;
+    case 'drug': S.pt.drug = +v; go('results'); break;
+    case 'ask': {
+      const id = 'r' + Date.now(); S.reqs.push({id, drug: S.pt.drug, ph: v, status: 'pending', t: Date.now()});
+      S.pt.ph = v; S.pt.req = id; go('chat');
+      if (v === 'p1') setTimeout(() => notify('زبون بيسأل: ' + short(DRUGS[S.pt.drug].en), 'رد بضغطة: موجود أو خلص.', 'pharmacist'), 900);
+      autoAnswer(id); break;
+    }
+    case 'checkout': S.pt.del = v === '1'; S.pt.qty = 1; go('checkout'); break;
+    case 'mode': S.pt.del = v === '1'; render(); break;
+    case 'qty': S.pt.qty = Math.min(20, Math.max(1, S.pt.qty + +v)); render(); break;
+    case 'place': {
+      const d = DRUGS[S.pt.drug], p = PHARM.find(x => x.id === S.pt.ph), drugs = d.p * S.pt.qty, fee = S.pt.del ? p.fee : 0;
+      const o = {id: 'o' + Date.now(), drug: d.id, ph: p.id, qty: S.pt.qty, del: S.pt.del, addr: S.pt.addr, total: drugs + SERVICE + fee, status: 'placed', t: Date.now(), rx: S.pt.rx};
+      S.orders.push(o); S.pt.order = o.id; go('track');
+      if (p.mine) setTimeout(() => notify(S.pt.del ? 'طلب توصيل جديد' : 'حجز جديد', `${o.qty} × ${short(d.en)}`, 'pharmacist'), 900);
+      autoMove(o.id); break;
+    }
+    case 'open': S.pt.order = v; go('track'); break;
+    case 'tab': S.rx.tab = v; render(); window.scrollTo(0, 0); break;
+    case 'answer': { const [id, ok] = v.split(':'); answer(id, ok === '1', true); break; }
+    case 'adv': { const [id, to] = v.split(':'); adv(id, to, true); break; }
+    case 'toggle': S.inv[v] = !S.inv[v]; S.at[v] = Date.now(); render(); break;
+    case 'sheet': S.rx.sheet = v; S.rx.q = ''; S.rx.import = null; render(); if (v === 'add') setTimeout(() => { const q = document.getElementById('rxq'); if (q) q.focus(); }, 50); break;
+    case 'closesheet': S.rx.sheet = null; S.rx.import = null; render(); break;
+    case 'addinv': S.inv[v] = true; S.at[v] = Date.now(); render(); break;
+    case 'api': S.rx.sheet = null; render(); notify('طلب الربط وصل', 'فريق Medfind هيكلمك يظبط الربط مع برنامج المخزون.'); break;
+    case 'sendotp': { const ph = (S.pt.phone || '').replace(/\D/g, ''); if (ph.length !== 11 || !ph.startsWith('01')) { notify('رقم الموبايل', 'اكتب رقم مصري من 11 رقم يبدأ بـ 01.'); break; } S.pt.otp = ''; go('otp'); break; }
+    case 'verify': if ((S.pt.otp || '').length < 6) { notify('كود التأكيد', 'اكتب الكود اللي وصلك (6 أرقام).'); break; } go('home'); break;
+    case 'trial': go('home'); break;
+    case 'logout': S.pt.phone = ''; go('login'); break;
+    case 'cancel': { const o = S.orders.find(x => x.id === v); if (o && o.status === 'placed') { o.status = 'cancelled'; render(); setTimeout(() => notify('الطلب اتلغى', 'وصل للصيدلية إن الطلب اتلغى.', 'pharmacist'), 600); } break; }
+    case 'medadd': if (!S.pt.meds.some(m => m.id === +v)) S.pt.meds.push({id: +v, day: new Date().getDate()}); S.pt.medq = ''; render(); break;
+    case 'meddel': S.pt.meds.splice(+v, 1); render(); break;
+    case 'medday': { const m = S.pt.meds[+v]; m.day = m.day % 28 + 1; render(); break; }
+    case 'obtoggle': S.rx.ob[v] = !S.rx.ob[v]; render(); break;
+    case 'pinloc': S.rx.pinned = true; render(); break;
+    case 'onboard': S.rx.onboarded = true; S.rx.tab = 'requests'; render(); window.scrollTo(0, 0); notify('صيدليتك ظهرت على Medfind', 'الزباين اللي حواليك يقدروا يسألوك دلوقتي.'); break;
+    case 'import': {
+      const im = S.rx.import = {pct: 0, done: false, count: 1240, matched: 1196};
+      const t = setInterval(() => { if (S.rx.import !== im) return clearInterval(t); im.pct = Math.min(100, im.pct + 20); if (im.pct >= 100) { clearInterval(t); im.done = true; [1, 5, 9, 12, 16, 19].forEach(id => { S.inv[id] = id !== 9; S.at[id] = Date.now(); }); S.rx.sync = {on: true, at: Date.now(), count: im.count}; } render(); }, 300);
+      render(); break;
+    }
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'q') { S.pt.q = e.target.value; render(); }
+  if (e.target.id === 'rxq') { S.rx.q = e.target.value; render(); }
+  if (e.target.id === 'addr') S.pt.addr = e.target.value;
+  if (e.target.id === 'phone') S.pt.phone = e.target.value;
+  if (e.target.id === 'otp') S.pt.otp = e.target.value.replace(/\D/g, '');
+  if (e.target.id === 'medq') { S.pt.medq = e.target.value; render(); }
+  if (e.target.id && e.target.id.startsWith('ob-')) { const k = e.target.id.slice(3); S.rx.ob[k] = k === 'fee' ? (+e.target.value || 0) : e.target.value; }
+});
+document.addEventListener('change', e => {
+  if (e.target.id !== 'rxfile' || !e.target.files[0]) return;
+  const r = new FileReader(); r.onload = () => { S.pt.rx = r.result; render(); }; r.readAsDataURL(e.target.files[0]);
+});
+render();
+</script>
+</body>
+</html>
